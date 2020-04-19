@@ -1,0 +1,114 @@
+function Autostart()
+{	
+	Orion.Exec("AutoHealSelf",true)
+}
+
+// Autoheal
+function AutoHealSelf()
+{ 
+	while(true)
+	{
+		if(!Player.Dead())
+		{
+			while(Player.Hits()<(Player.MaxHits()-20) || Player.Poisoned())
+			{		
+				if(Orion.Count(0x0E21) > 0)
+				{
+					Orion.BandageSelf();					
+					Orion.Wait(500);
+					Orion.WaitJournal("Вылечено|Вы положили", Orion.Now(), Orion.Now()+10000);
+				}
+				else
+					Orion.Print('33', ' No more bandage left ! ');
+			}					
+			Orion.Wait(500);							
+		}
+		Orion.Wait(500);
+	}
+}
+
+// Attack NewTargetSystem target
+function AttackNextMob(){    
+	var Target =  Orion.TargetSystemSerial();
+	Orion.WarMode(true);
+	Orion.CharPrint(self, 1153, ">>"+Orion.FindObject(Target).Name());
+	Orion.WaitTargetObject(Target);
+	Orion.Say('all kill');
+	Orion.Wait(200);
+    Orion.Attack(Target);    
+}
+
+// Summon bear + overhead timer
+function summon_bear()
+{
+	Orion.Say(".newbear")
+	if(!Orion.DisplayTimerExists('bear_timer'))
+		Orion.AddDisplayTimer('bear_timer', 600*1000, 'AboveChar', 'LineBar', 'Bear CD');
+}
+
+
+// Loot
+function loot()
+{	
+	_bags = [
+		0x0E75, // Backpack
+	]
+	var _corpses = Orion.FindType(0x2006, 0xFFFF, ground);	
+	if(_corpses.length)
+	{
+		_corpses.forEach(function(_corpse){
+			Orion.Print("Corpse -> "+_corpse);
+			loot_from_container(_corpse);
+			Orion.Wait(100);
+			_bags.forEach(function(_bag){
+				var _bags_in_corpse = Orion.FindType(_bag, 0xFFFF, _corpse)
+				if(_bags_in_corpse.length)
+				{
+					_bags_in_corpse.forEach(function(_bag_in_corpse){						
+						loot_from_container(_bag_in_corpse);
+						Orion.Wait(100);
+					});
+				}
+			})
+			
+		});
+	}
+}
+
+
+// Loot from container
+function loot_from_container(container_serial)
+{
+	_loot = [
+		// General
+		0x0EED,  // Gold
+		0x0F3F,  // Arrows
+		// Gems
+		0x0F11,  // Sapphire
+		0x0F25,  // Piece of Amber
+		0x0F10,  // Emerald
+		0x0F18,  // Tourmaline
+		0x0F13,  // Rubie
+		0x0F0F,  // Star Sapphire
+		0x0F26,  // Diamond
+		0x0F15,  // Citrine
+		0x0F16,  // Amethyst
+		// Misc
+		0x0E34,  // Eledars Contract
+	];
+	// ###################
+	Orion.UseObject(container_serial);
+	Orion.Wait(100);
+	_loot.forEach(function(_item){
+		var _found_items = Orion.FindType(_item, 0xFFFF, container_serial);
+		if(_found_items.length)
+		{
+			Orion.Print("Found -> " + _item);
+			_found_items.forEach(function(_loot_item){
+				Orion.MoveItem(_loot_item, 0, backpack);
+				Orion.Wait(600);				
+			});
+		}
+	});
+
+}
