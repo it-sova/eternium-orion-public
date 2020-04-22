@@ -20,6 +20,7 @@ function AutoHealSelf()
 				}
 				else
 					Orion.Print('33', ' No more bandage left ! ');
+				Orion.Wait(500);
 			}					
 			Orion.Wait(500);							
 		}
@@ -56,7 +57,16 @@ function loot()
 	var _corpses = Orion.FindType(0x2006, 0xFFFF, ground);	
 	if(_corpses.length)
 	{
+		var _weapon = Orion.ObjAtLayer(2);				
 		_corpses.forEach(function(_corpse){
+			var _dagger = Orion.FindType(0x0F51, 0xFFFF, backpack);
+			if(_dagger.length)
+			{
+				Orion.WaitTargetObject(_corpse);
+				Orion.UseObject(_dagger[0]);
+				Orion.Wait(100);
+
+			}
 			Orion.Print("Corpse -> "+_corpse);
 			loot_from_container(_corpse);
 			Orion.Wait(100);
@@ -69,8 +79,9 @@ function loot()
 						Orion.Wait(100);
 					});
 				}
-			})
-			
+			});
+		if(!Orion.ObjAtLayer(2) && _weapon)
+			Orion.Equip(_weapon.Serial());
 		});
 	}
 }
@@ -110,5 +121,11 @@ function loot_from_container(container_serial)
 			});
 		}
 	});
+
+}
+
+
+function test()
+{	
 
 }
