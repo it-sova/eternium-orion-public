@@ -62,9 +62,9 @@ function loot()
 			var _dagger = Orion.FindType(0x0F51, 0xFFFF, backpack);
 			if(_dagger.length)
 			{
+				Orion.UseObject(_dagger);
 				Orion.WaitTargetObject(_corpse);
-				Orion.UseObject(_dagger[0]);
-				Orion.Wait(100);
+				Orion.Wait(500);
 
 			}
 			Orion.Print("Corpse -> "+_corpse);
