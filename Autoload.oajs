@@ -80,7 +80,7 @@ function loot()
 					});
 				}
 			});
-		if(!Orion.ObjAtLayer(2) && _weapon)
+		if(!Orion.ObjAtLayer(2) || !Orion.ObjAtLayer(1) && _weapon)
 			Orion.Equip(_weapon.Serial());
 		});
 	}
