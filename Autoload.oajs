@@ -75,14 +75,14 @@ function loot()
 			}
 			Orion.Print("Corpse -> "+_corpse);
 			loot_from_container(_corpse);
-			Orion.Wait(100);
+			Orion.Wait(300);
 			_bags.forEach(function(_bag){
 				var _bags_in_corpse = Orion.FindType(_bag, 0xFFFF, _corpse)
 				if(_bags_in_corpse.length)
 				{
 					_bags_in_corpse.forEach(function(_bag_in_corpse){						
 						loot_from_container(_bag_in_corpse);
-						Orion.Wait(100);
+						Orion.Wait(300);
 					});
 				}
 			});
@@ -115,7 +115,7 @@ function loot_from_container(container_serial)
 	];
 	// ###################
 	Orion.UseObject(container_serial);
-	Orion.Wait(100);
+	Orion.Wait(300);
 	_loot.forEach(function(_item){
 		var _found_items = Orion.FindType(_item, 0xFFFF, container_serial);
 		if(_found_items.length)
