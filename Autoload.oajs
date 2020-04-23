@@ -142,3 +142,7 @@ function test()
 	Orion.AddDisplayTimer(4, 3000, 'custom', 'LineBar', 'Ability4', 700, 495);
 }
 
+function test2()
+{
+Orion.Print(Orion.InfoBuff());
+}

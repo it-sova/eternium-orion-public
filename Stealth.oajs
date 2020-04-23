@@ -8,11 +8,13 @@ function Autoload()
 		{
 			Orion.UseSkill(47);
 			Orion.WaitJournal("не удалось|сможешь сделать", Orion.Now(), Orion.Now()+10000);
+			Orion.Wait(500);
 		}
 		while(Player.Hidden())
 		{
 			Orion.WalkTo(_start_x+1, _start_y, Player.Z(), 0);
 			Orion.WalkTo(_start_x, _start_y, Player.Z(), 0);
+			Orion.Wait(500);
 		}
 		Orion.Wait(500);
 	}
