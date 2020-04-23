@@ -57,7 +57,7 @@ function loot()
 	var _corpses = Orion.FindType(0x2006, 0xFFFF, ground);	
 	if(_corpses.length)
 	{
-		var _weapon = Orion.ObjAtLayer(2);				
+		var _weapon = Orion.ObjAtLayer(2) || Orion.ObjAtLayer(1);
 		_corpses.forEach(function(_corpse){
 			var _dagger = Orion.FindType(0x0F51, 0xFFFF, backpack);
 			if(_dagger.length)
@@ -127,5 +127,6 @@ function loot_from_container(container_serial)
 
 function test()
 {	
-
+	var _weapon = Orion.ObjAtLayer(2) || Orion.ObjAtLayer(1);
+	Orion.Print(_weapon)
 }
