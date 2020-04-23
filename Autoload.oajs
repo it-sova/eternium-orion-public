@@ -54,9 +54,10 @@ function loot()
 	_bags = [
 		0x0E75, // Backpack
 	]
+	var _counter = 0;
 	var _corpses = Orion.FindType(0x2006, 0xFFFF, ground);	
 	if(_corpses.length)
-	{
+	{		
 		if(Orion.ObjAtLayer(2) && Orion.ObjAtLayer(1))
 		{
 			_weapon = Orion.ObjAtLayer(1)
@@ -66,6 +67,8 @@ function loot()
 
 		var _dagger = Orion.FindType(0x0F51, 0xFFFF, backpack);
 		_corpses.forEach(function(_corpse){			
+			_counter++;
+			Orion.Print("Corpse "+_counter+"/"+_corpses.length);
 			if(_dagger.length)
 			{				
 				Orion.UseObject(_dagger);
@@ -74,7 +77,6 @@ function loot()
 				Orion.Wait(650);								
 
 			}
-			Orion.Print("Corpse -> "+_corpse);
 			loot_from_container(_corpse);
 			Orion.Wait(300);
 			_bags.forEach(function(_bag){
@@ -122,7 +124,6 @@ function loot_from_container(container_serial)
 		var _found_items = Orion.FindType(_item, 0xFFFF, container_serial);
 		if(_found_items.length)
 		{
-			Orion.Print("Found -> " + _item);
 			_found_items.forEach(function(_loot_item){
 				Orion.MoveItem(_loot_item, 0, backpack);
 				Orion.Wait(600);				
