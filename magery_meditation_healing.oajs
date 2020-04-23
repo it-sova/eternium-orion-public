@@ -1,0 +1,37 @@
+SPELL_NAME = "Magic Arrow";
+BANDAGES = 0x0E21;
+function Autostart()
+{
+	while(!Player.Dead())
+	{
+		while(Player.Mana() > 20 && Player.Hits() > 20)
+		{
+			Orion.Cast(SPELL_NAME, 'self');
+			Orion.Wait(1100);
+		}		
+		while(Player.Mana() < Player.MaxMana() )
+		{
+			Orion.UseSkill("Meditation");
+			Orion.WaitJournal("Ты потерял|Ты полон", Orion.Now(), Orion.Now()+10000);
+		}		
+		if(Player.Hits() < Player.MaxHits())
+		{
+			var _bandages = Orion.FindType(BANDAGES);
+			if(_bandages.length)
+			{
+				while(Player.Hits() < Player.MaxHits())
+				{
+					Orion.BandageSelf();					
+					Orion.Wait(200);
+					Orion.WaitJournal("Вылечено|Не получилось", Orion.Now(), Orion.Now()+70000);
+					Orion.Wait(3000);
+				}
+			}
+			else
+			{
+				Orion.Print("No more bandages left");
+				Orion.Wait(5000);
+			}
+		}
+	}
+}
