@@ -44,7 +44,7 @@ function summon_bear()
 {
 	Orion.Say(".newbear")
 	if(!Orion.DisplayTimerExists('bear_timer'))
-		Orion.AddDisplayTimer('bear_timer', 600*1000, 'AboveChar', 'LineBar', 'Bear CD');
+		Orion.AddDisplayTimer('bear_timer', 650*1000, 'AboveChar', 'LineBar', 'Bear CD');
 }
 
 
@@ -64,13 +64,14 @@ function loot()
 		else
 			_weapon = Orion.ObjAtLayer(2)
 
-		_corpses.forEach(function(_corpse){
-			var _dagger = Orion.FindType(0x0F51, 0xFFFF, backpack);
+		var _dagger = Orion.FindType(0x0F51, 0xFFFF, backpack);
+		_corpses.forEach(function(_corpse){			
 			if(_dagger.length)
-			{
+			{				
 				Orion.UseObject(_dagger);
-				Orion.WaitTargetObject(_corpse);
-				Orion.Wait(500);
+				Orion.Wait(200);
+				Orion.TargetObject(_corpse);
+				Orion.Wait(650);								
 
 			}
 			Orion.Print("Corpse -> "+_corpse);
@@ -100,6 +101,7 @@ function loot_from_container(container_serial)
 		// General
 		0x0EED,  // Gold
 		0x0F3F,  // Arrows
+		0x1BFB,  // Bolts
 		// Gems
 		0x0F11,  // Sapphire
 		0x0F25,  // Piece of Amber
@@ -133,11 +135,9 @@ function loot_from_container(container_serial)
 
 function test()
 {		
-	if(Orion.ObjAtLayer(2) && Orion.ObjAtLayer(1))
-	{
-		_weapon = Orion.ObjAtLayer(1)
-	}
-	else
-		_weapon = Orion.ObjAtLayer(2)
-	Orion.Print(_weapon.Serial())
+	Orion.AddDisplayTimer(1, 4000, 'custom', 'LineBar', 'Ability1', 700, 350);
+	Orion.AddDisplayTimer(2, 6000, 'custom', 'LineBar', 'Ability2', 700, 395);
+	Orion.AddDisplayTimer(3, 7000, 'custom', 'LineBar', 'Ability3', 700, 440);
+	Orion.AddDisplayTimer(4, 3000, 'custom', 'LineBar', 'Ability4', 700, 495);
 }
+
