@@ -43,10 +43,17 @@ function AttackNextMob(){
 function summon_bear()
 {
 	Orion.Say(".newbear")
-	if(!Orion.DisplayTimerExists('bear_timer'))
-		Orion.AddDisplayTimer('bear_timer', 650*1000, 'AboveChar', 'LineBar', 'Bear CD');
+	if(!Orion.DisplayTimerExists(1))
+		Orion.AddDisplayTimer(1, 620*1000, 'custom', 'LineBar', 'Bear', 700, 350);
 }
 
+function rapid_shooting()
+{
+	Orion.Say(".rapidshoot")
+	if(!Orion.DisplayTimerExists(2))
+		Orion.AddDisplayTimer(2, 340*1000, 'custom', 'LineBar', 'Shooting', 700, 395);
+
+}
 
 // Loot from container
 function loot_from_container(container_serial)
@@ -68,6 +75,7 @@ function loot_from_container(container_serial)
 		0x0F16,  // Amethyst
 		// Misc
 		0x0E34,  // Eledars Contract
+		0x2258,  // Recipe
 	];
 	// ###################
 	Orion.UseObject(container_serial);
@@ -94,11 +102,14 @@ function test()
 	Orion.AddDisplayTimer(4, 3000, 'custom', 'LineBar', 'Ability4', 700, 495);
 }
 
-function test2()
+function changing_timer(id, command, duration, threshold, timer_name, x, y)
 {
-Orion.Print(Orion.InfoBuff());
+	Orion.Say(command)
+	Orion.AddDisplayTimer(id, duration * 1000, 'custom', 'LineBar', timer_name, x, y);
+	Orion.Wait(threshold * 1000);
+	Orion.RemoveDisplayTimer(id);
+	Orion.AddDisplayTimer(id, (duration - threshold) * 1000, 'custom', 'LineBar', timer_name, x, y, 0x0026, 0xFF);
 }
-
 
 function loot()
 {	
@@ -107,9 +118,10 @@ function loot()
 	];
 	_bladed = [
 		0x1401, // Kryss
+		0x1234, // РЕЗАЛО БОГОВ
 	];
 	var _counter = 0;
-	var _to_cut = 1;
+	var _to_cut = 0;
 	var _corpses = Orion.FindType(0x2006, 0xFFFF, ground);	
 	if(_corpses.length)
 	{		
@@ -154,3 +166,4 @@ function loot()
 		});
 	}
 }
+
