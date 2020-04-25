@@ -48,54 +48,6 @@ function summon_bear()
 }
 
 
-// Loot
-function loot()
-{	
-	_bags = [
-		0x0E75, // Backpack
-	]
-	var _counter = 0;
-	var _corpses = Orion.FindType(0x2006, 0xFFFF, ground);	
-	if(_corpses.length)
-	{		
-		if(Orion.ObjAtLayer(2) && Orion.ObjAtLayer(1))
-		{
-			_weapon = Orion.ObjAtLayer(1)
-		}
-		else
-			_weapon = Orion.ObjAtLayer(2)
-
-		var _dagger = Orion.FindType(0x0F51, 0xFFFF, backpack);
-		_corpses.forEach(function(_corpse){			
-			_counter++;
-			Orion.Print("Corpse "+_counter+"/"+_corpses.length);
-			if(_dagger.length)
-			{				
-				Orion.UseObject(_dagger);
-				Orion.Wait(200);
-				Orion.TargetObject(_corpse);
-				Orion.Wait(650);								
-
-			}
-			loot_from_container(_corpse);
-			Orion.Wait(300);
-			_bags.forEach(function(_bag){
-				var _bags_in_corpse = Orion.FindType(_bag, 0xFFFF, _corpse)
-				if(_bags_in_corpse.length)
-				{
-					_bags_in_corpse.forEach(function(_bag_in_corpse){						
-						loot_from_container(_bag_in_corpse);
-						Orion.Wait(300);
-					});
-				}
-			});
-		if(_weapon)
-			Orion.Equip(_weapon.Serial());
-		});
-	}
-}
-
-
 // Loot from container
 function loot_from_container(container_serial)
 {
@@ -145,4 +97,60 @@ function test()
 function test2()
 {
 Orion.Print(Orion.InfoBuff());
+}
+
+
+function loot()
+{	
+	_bags = [
+		0x0E75, // Backpack
+	];
+	_bladed = [
+		0x1401, // Kryss
+	];
+	var _counter = 0;
+	var _to_cut = 1;
+	var _corpses = Orion.FindType(0x2006, 0xFFFF, ground);	
+	if(_corpses.length)
+	{		
+		var _dagger = Orion.FindType(0x0F51, 0xFFFF, backpack);
+		if(Orion.ObjAtLayer(1))		
+			_weapon = Orion.ObjAtLayer(1)		
+		else
+			_weapon = Orion.ObjAtLayer(2)
+			
+		_bladed.forEach(function(_type){
+			if(_type == _weapon.Graphic())
+			{
+				Orion.Print("Bladed item equipped");
+				_dagger = _weapon.Serial();
+			}
+		});		
+		_corpses.forEach(function(_corpse){			
+			_counter++;
+			Orion.Print("Corpse "+_counter+"/"+_corpses.length);
+			if(_dagger.length && _to_cut == 1)
+			{				
+				Orion.UseObject(_dagger);
+				Orion.Wait(200);
+				Orion.TargetObject(_corpse);
+				Orion.Wait(650);								
+
+			}
+			loot_from_container(_corpse);
+			Orion.Wait(300);
+			_bags.forEach(function(_bag){
+				var _bags_in_corpse = Orion.FindType(_bag, 0xFFFF, _corpse)
+				if(_bags_in_corpse.length)
+				{
+					_bags_in_corpse.forEach(function(_bag_in_corpse){						
+						loot_from_container(_bag_in_corpse);
+						Orion.Wait(300);
+					});
+				}
+			});
+		if(_weapon)
+			Orion.Equip(_weapon.Serial());
+		});
+	}
 }
