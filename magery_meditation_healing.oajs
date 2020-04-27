@@ -1,4 +1,4 @@
-SPELL_NAME = "Magic Arrow";
+SPELL_NAME = "Weaken";
 BANDAGES = 0x0E21;
 function Autostart()
 {
@@ -12,7 +12,7 @@ function Autostart()
 		while(Player.Mana() < Player.MaxMana() )
 		{
 			Orion.UseSkill("Meditation");
-			Orion.WaitJournal("Ты потерял|Ты полон", Orion.Now(), Orion.Now()+10000);
+			Orion.WaitJournal("Ты потерял|Ты полон", Orion.Now(), Orion.Now()+20000);
 		}		
 		if(Player.Hits() < Player.MaxHits())
 		{
@@ -24,7 +24,7 @@ function Autostart()
 					Orion.BandageSelf();					
 					Orion.Wait(200);
 					Orion.WaitJournal("Вылечено|Не получилось", Orion.Now(), Orion.Now()+70000);
-					Orion.Wait(3000);
+					Orion.Wait(1000);
 				}
 			}
 			else

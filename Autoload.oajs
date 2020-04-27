@@ -10,13 +10,14 @@ function AutoHealSelf()
 	{
 		if(!Player.Dead())
 		{
-			while(Player.Hits()<(Player.MaxHits()-20) || Player.Poisoned())
+			while(Player.Hits()<(Player.MaxHits()-10) || Player.Poisoned())
 			{		
 				if(Orion.Count(0x0E21) > 0)
 				{
 					Orion.BandageSelf();					
 					Orion.Wait(500);
-					Orion.WaitJournal("Вылечено|Вы положили", Orion.Now(), Orion.Now()+10000);
+					Orion.WaitJournal("Вылечено|Не удалось|Вы положили", Orion.Now(), Orion.Now()+10000);
+					Orion.Wait(1000);
 				}
 				else
 					Orion.Print('33', ' No more bandage left ! ');
@@ -33,8 +34,6 @@ function AttackNextMob(){
 	var Target =  Orion.TargetSystemSerial();
 	Orion.WarMode(true);
 	Orion.CharPrint(self, 1153, ">>"+Orion.FindObject(Target).Name());
-	Orion.WaitTargetObject(Target);
-	Orion.Say('all kill');
 	Orion.Wait(200);
     Orion.Attack(Target);    
 }
@@ -45,6 +44,13 @@ function summon_bear()
 	Orion.Say(".newbear")
 	if(!Orion.DisplayTimerExists(1))
 		Orion.AddDisplayTimer(1, 620*1000, 'custom', 'LineBar', 'Bear', 700, 350);
+}
+
+function inferno_chain()
+{
+	Orion.Say(".infchain")
+	if(!Orion.DisplayTimerExists(1))
+		Orion.AddDisplayTimer(1, 80*1000, 'custom', 'LineBar', 'Chains', 700, 350);
 }
 
 function rapid_shooting()
@@ -76,6 +82,8 @@ function loot_from_container(container_serial)
 		// Misc
 		0x0E34,  // Eledars Contract
 		0x2258,  // Recipe
+		// Cutting
+		0x1BD1,  // Feather
 	];
 	// ###################
 	Orion.UseObject(container_serial);
@@ -102,6 +110,15 @@ function test()
 	Orion.AddDisplayTimer(4, 3000, 'custom', 'LineBar', 'Ability4', 700, 495);
 }
 
+function mega_timer_9000()
+{
+	for(var i = 1; i < 9999; i++ )
+	{
+		Orion.Print(i+" секунда");
+		Orion.Wait(1000);
+	}
+}
+
 function changing_timer(id, command, duration, threshold, timer_name, x, y)
 {
 	Orion.Say(command)
@@ -118,10 +135,10 @@ function loot()
 	];
 	_bladed = [
 		0x1401, // Kryss
-		0x1234, // РЕЗАЛО БОГОВ
+		0x0F51, // Dagger
 	];
 	var _counter = 0;
-	var _to_cut = 0;
+	var _to_cut = 1;
 	var _corpses = Orion.FindType(0x2006, 0xFFFF, ground);	
 	if(_corpses.length)
 	{		
@@ -161,9 +178,17 @@ function loot()
 					});
 				}
 			});
+		});
 		if(_weapon)
 			Orion.Equip(_weapon.Serial());
-		});
 	}
 }
 
+function craft()
+{
+	while(!Player.Dead())
+	{
+		Orion.Say(".makelastitem");
+		Orion.Wait(4000);
+	}
+}
