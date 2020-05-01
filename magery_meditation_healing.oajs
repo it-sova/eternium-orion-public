@@ -1,13 +1,20 @@
-SPELL_NAME = "Weaken";
+SPELL_NAME = "Magic Arrow";
 BANDAGES = 0x0E21;
 function Autostart()
 {
 	while(!Player.Dead())
 	{
 		while(Player.Mana() > 20 && Player.Hits() > 20)
-		{
-			Orion.Cast(SPELL_NAME, 'self');
-			Orion.Wait(1100);
+		{		
+			Orion.Cast(SPELL_NAME);
+			Orion.WaitForTarget(5000);
+			if(Orion.HaveTarget())
+			{
+				Orion.TargetObject(self)
+				Orion.Wait(1100);
+			}			
+			else
+				Orion.Print("WaitForTarget timeout");
 		}		
 		while(Player.Mana() < Player.MaxMana() )
 		{

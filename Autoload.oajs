@@ -10,13 +10,13 @@ function AutoHealSelf()
 	{
 		if(!Player.Dead())
 		{
-			while(Player.Hits()<(Player.MaxHits()-10) || Player.Poisoned())
+			while(Player.Hits()<(Player.MaxHits()-10))
 			{		
 				if(Orion.Count(0x0E21) > 0)
 				{
 					Orion.BandageSelf();					
 					Orion.Wait(500);
-					Orion.WaitJournal("Вылечено|Не удалось|Вы положили", Orion.Now(), Orion.Now()+10000);
+					Orion.WaitJournal("Вылечено|interrupted|Не удалось|Вы положили", Orion.Now(), Orion.Now()+10000);
 					Orion.Wait(1000);
 				}
 				else
@@ -30,12 +30,18 @@ function AutoHealSelf()
 }
 
 // Attack NewTargetSystem target
-function AttackNextMob(){    
-	var Target =  Orion.TargetSystemSerial();
-	Orion.WarMode(true);
-	Orion.CharPrint(self, 1153, ">>"+Orion.FindObject(Target).Name());
-	Orion.Wait(200);
-    Orion.Attack(Target);    
+function AttackNextMob()
+{    
+	var _target =  Orion.TargetSystemSerial();
+	var _name = Orion.FindObject(_target).Name()
+	if(_target && _name && _name != "Bear spirit")
+	{
+		Orion.WarMode(true);
+		Orion.CharPrint(self, 1153, ">>"+_name);
+		Orion.Wait(200);
+	    Orion.Attack(_target);    
+	}
+
 }
 
 // Summon bear + overhead timer
@@ -43,7 +49,7 @@ function summon_bear()
 {
 	Orion.Say(".newbear")
 	if(!Orion.DisplayTimerExists(1))
-		Orion.AddDisplayTimer(1, 620*1000, 'custom', 'LineBar', 'Bear', 700, 350);
+		Orion.AddDisplayTimer(1, 650*1000, 'custom', 'LineBar', 'Bear', 700, 350);
 }
 
 function inferno_chain()
@@ -81,7 +87,9 @@ function loot_from_container(container_serial)
 		0x0F16,  // Amethyst
 		// Misc
 		0x0E34,  // Eledars Contract
-		0x2258,  // Recipe
+		//0x2258,  // Recipe
+		0x14EB,  // Map
+		0x14ED,  // Ashas book
 		// Cutting
 		0x1BD1,  // Feather
 	];
@@ -112,11 +120,7 @@ function test()
 
 function mega_timer_9000()
 {
-	for(var i = 1; i < 9999; i++ )
-	{
-		Orion.Print(i+" секунда");
-		Orion.Wait(1000);
-	}
+	changing_timer(1, "", 20, 10, "Test_Timer", 700, 350);
 }
 
 function changing_timer(id, command, duration, threshold, timer_name, x, y)
@@ -138,7 +142,7 @@ function loot()
 		0x0F51, // Dagger
 	];
 	var _counter = 0;
-	var _to_cut = 1;
+	var _to_cut = 0;
 	var _corpses = Orion.FindType(0x2006, 0xFFFF, ground);	
 	if(_corpses.length)
 	{		
@@ -190,5 +194,86 @@ function craft()
 	{
 		Orion.Say(".makelastitem");
 		Orion.Wait(4000);
+	}
+}
+
+
+function exp_counter()
+{
+	// Вы получили {int} единиц опыта
+	var _started = new Date().getTime();
+	var _total_exp = 0;
+	while(true)
+	{
+		if(Orion.InJournal("MakeReset"))
+		{
+			_started = new Date().getTime();
+			_total_exp = 0;
+			Orion.ClearJournal("MakeReset");
+			Orion.Print("Опыт сброшен");
+		}
+		var _message = Orion.WaitJournal("Вы получили", Orion.Now(), Orion.Now()+10000);
+		if(_message)
+		{
+			var _message_text = _message.Text();
+			var _exp_match = /Вы получили (\d+)/.exec(_message_text);
+			if(_exp_match && _exp_match.length)
+				_total_exp+= parseInt(_exp_match[1]);
+
+			var _minutes = ((new Date().getTime() - _started) / 1000) / 60;			
+			var _exp_per_minute = (_total_exp/_minutes).toFixed(2);
+			Orion.Print("Минут -> "+_minutes.toFixed(0));
+         	Orion.Print("0x0035", "Опыта в минуту: +"+_exp_per_minute+", всего: +"+_total_exp);
+		}		
+
+		Orion.Wait(200);
+	}
+}
+
+function sparring()
+{
+	// Не трогать
+	_start_x = Player.X();
+	_start_y = Player.Y();	
+	// Трогать
+	_target = 0x0002E8BF;
+	_hp_to_flee = 80;
+	_flee_x = _start_x - 4;
+
+	while(!Player.Dead())
+	{
+		Orion.Attack(_target);
+		if(Player.Hits() <= _hp_to_flee)
+		{			
+			Orion.WalkTo(_flee_x, _start_y, Player.Z(), 0);
+			while(Player.Hits() < Player.MaxHits() - 22)
+			{								
+				Orion.Wait(1000);				
+			}
+		}				
+		else
+		{			
+			Orion.WalkTo(_start_x, _start_y, Player.Z(), 0);
+			while(Player.Hits() >= _hp_to_flee)
+			{
+				Orion.Wait(200);
+			}
+		}
+		Orion.Wait(500);
+	}
+}
+
+function unload_maps()
+{	
+	var _maps = Orion.FindType(0x14EB);
+	Orion.Print(_maps);
+	if(_maps.length)
+	{		
+		_maps.forEach(function(_item){
+			Orion.Print(_item);
+			var _map = Orion.FindObject(_item);			
+			Orion.Print(_map);
+			Orion.Print(_map.Properties());
+		});
 	}
 }
