@@ -1,6 +1,7 @@
 function Autostart()
 {	
 	Orion.Exec("AutoHealSelf",true)
+	Orion.Exec("exp_counter",true)
 }
 
 // Autoheal
@@ -49,7 +50,10 @@ function summon_bear()
 {
 	Orion.Say(".newbear")
 	if(!Orion.DisplayTimerExists(1))
+	{
 		Orion.AddDisplayTimer(1, 650*1000, 'custom', 'LineBar', 'Bear', 700, 350);
+		Orion.DisplayTimerSetSize(1, 200, 10);
+	}
 }
 
 function inferno_chain()
@@ -63,7 +67,10 @@ function rapid_shooting()
 {
 	Orion.Say(".rapidshoot")
 	if(!Orion.DisplayTimerExists(2))
+	{
 		Orion.AddDisplayTimer(2, 340*1000, 'custom', 'LineBar', 'Shooting', 700, 395);
+		Orion.DisplayTimerSetSize(2, 200, 10);
+	}
 
 }
 
@@ -76,15 +83,15 @@ function loot_from_container(container_serial)
 		0x0F3F,  // Arrows
 		0x1BFB,  // Bolts
 		// Gems
-		0x0F11,  // Sapphire
-		0x0F25,  // Piece of Amber
-		0x0F10,  // Emerald
-		0x0F18,  // Tourmaline
+//		0x0F11,  // Sapphire
+//		0x0F25,  // Piece of Amber
+//	    0x0F10,  // Emerald
+//		0x0F18,  // Tourmaline
 		0x0F13,  // Rubie
 		0x0F0F,  // Star Sapphire
 		0x0F26,  // Diamond
-		0x0F15,  // Citrine
-		0x0F16,  // Amethyst
+//		0x0F15,  // Citrine
+//		0x0F16,  // Amethyst
 		// Misc
 		0x0E34,  // Eledars Contract
 		//0x2258,  // Recipe
@@ -92,6 +99,7 @@ function loot_from_container(container_serial)
 		0x14ED,  // Ashas book
 		// Cutting
 		0x1BD1,  // Feather
+		//0x0F8E,   // Dragon Scale
 	];
 	// ###################
 	Orion.UseObject(container_serial);
@@ -109,28 +117,6 @@ function loot_from_container(container_serial)
 
 }
 
-
-function test()
-{		
-	Orion.AddDisplayTimer(1, 4000, 'custom', 'LineBar', 'Ability1', 700, 350);
-	Orion.AddDisplayTimer(2, 6000, 'custom', 'LineBar', 'Ability2', 700, 395);
-	Orion.AddDisplayTimer(3, 7000, 'custom', 'LineBar', 'Ability3', 700, 440);
-	Orion.AddDisplayTimer(4, 3000, 'custom', 'LineBar', 'Ability4', 700, 495);
-}
-
-function mega_timer_9000()
-{
-	changing_timer(1, "", 20, 10, "Test_Timer", 700, 350);
-}
-
-function changing_timer(id, command, duration, threshold, timer_name, x, y)
-{
-	Orion.Say(command)
-	Orion.AddDisplayTimer(id, duration * 1000, 'custom', 'LineBar', timer_name, x, y);
-	Orion.Wait(threshold * 1000);
-	Orion.RemoveDisplayTimer(id);
-	Orion.AddDisplayTimer(id, (duration - threshold) * 1000, 'custom', 'LineBar', timer_name, x, y, 0x0026, 0xFF);
-}
 
 function loot()
 {	
@@ -230,38 +216,7 @@ function exp_counter()
 	}
 }
 
-function sparring()
-{
-	// Не трогать
-	_start_x = Player.X();
-	_start_y = Player.Y();	
-	// Трогать
-	_target = 0x0002E8BF;
-	_hp_to_flee = 80;
-	_flee_x = _start_x - 4;
 
-	while(!Player.Dead())
-	{
-		Orion.Attack(_target);
-		if(Player.Hits() <= _hp_to_flee)
-		{			
-			Orion.WalkTo(_flee_x, _start_y, Player.Z(), 0);
-			while(Player.Hits() < Player.MaxHits() - 22)
-			{								
-				Orion.Wait(1000);				
-			}
-		}				
-		else
-		{			
-			Orion.WalkTo(_start_x, _start_y, Player.Z(), 0);
-			while(Player.Hits() >= _hp_to_flee)
-			{
-				Orion.Wait(200);
-			}
-		}
-		Orion.Wait(500);
-	}
-}
 
 function unload_maps()
 {	

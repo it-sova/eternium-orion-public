@@ -1,0 +1,31 @@
+function exp_counter()
+{
+	// Вы получили {int} единиц опыта
+	var _started = new Date().getTime();
+	var _total_exp = 0;
+	while(true)
+	{
+		if(Orion.InJournal("MakeReset"))
+		{
+			_started = new Date().getTime();
+			_total_exp = 0;
+			Orion.ClearJournal("MakeReset");
+			Orion.Print("Опыт сброшен");
+		}
+		var _message = Orion.WaitJournal("Вы получили", Orion.Now(), Orion.Now()+10000);
+		if(_message)
+		{
+			var _message_text = _message.Text();
+			var _exp_match = /Вы получили (\d+)/.exec(_message_text);
+			if(_exp_match && _exp_match.length)
+				_total_exp+= parseInt(_exp_match[1]);
+
+			var _minutes = ((new Date().getTime() - _started) / 1000) / 60;			
+			var _exp_per_minute = (_total_exp/_minutes).toFixed(2);
+			Orion.Print("Минут -> "+_minutes.toFixed(0));
+         	Orion.Print("0x0035", "Опыта в минуту: +"+_exp_per_minute+", всего: +"+_total_exp);
+		}		
+
+		Orion.Wait(200);
+	}
+}
