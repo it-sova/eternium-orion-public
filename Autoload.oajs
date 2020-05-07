@@ -77,44 +77,46 @@ function rapid_shooting()
 // Loot from container
 function loot_from_container(container_serial)
 {
-	_loot = [
-		// General
-		0x0EED,  // Gold
-		0x0F3F,  // Arrows
-		0x1BFB,  // Bolts
-		// Gems
-//		0x0F11,  // Sapphire
-//		0x0F25,  // Piece of Amber
-//	    0x0F10,  // Emerald
-//		0x0F18,  // Tourmaline
-		0x0F13,  // Rubie
-		0x0F0F,  // Star Sapphire
-		0x0F26,  // Diamond
-//		0x0F15,  // Citrine
-//		0x0F16,  // Amethyst
-		// Misc
-		0x0E34,  // Eledars Contract
-		//0x2258,  // Recipe
-		0x14EB,  // Map
-		0x14ED,  // Ashas book
-		// Cutting
-		0x1BD1,  // Feather
-		//0x0F8E,   // Dragon Scale
-	];
-	// ###################
-	Orion.UseObject(container_serial);
-	Orion.Wait(300);
-	_loot.forEach(function(_item){
-		var _found_items = Orion.FindType(_item, 0xFFFF, container_serial);
-		if(_found_items.length)
-		{
-			_found_items.forEach(function(_loot_item){
-				Orion.MoveItem(_loot_item, 0, backpack);
-				Orion.Wait(600);				
-			});
-		}
-	});
-
+    _loot_bag = 0x00000;
+    _loot = [
+        // General
+        0x0EED,  // Gold
+        0x0F3F,  // Arrows
+        0x1BFB,  // Bolts
+        // Gems
+//        0x0F11,  // Sapphire
+//        0x0F25,  // Piece of Amber
+//        0x0F10,  // Emerald
+//        0x0F18,  // Tourmaline
+        0x0F13,  // Rubie
+        0x0F0F,  // Star Sapphire
+        0x0F26,  // Diamond
+//        0x0F15,  // Citrine
+//        0x0F16,  // Amethyst
+        // Misc
+        0x0E34,  // Eledars Contract
+        //0x2258,  // Recipe
+        0x14EB,  // Map
+        0x14ED,  // Ashas book
+        // Cutting
+        0x1BD1,  // Feather
+        //0x0F8E,   // Dragon Scale
+    ];    
+    if(!Orion.FindObject(_loot_bag))
+        _loot_bag = backpack;    
+    // ###################
+    Orion.UseObject(container_serial);
+    Orion.Wait(300);
+    _loot.forEach(function(_item){
+        var _found_items = Orion.FindType(_item, 0xFFFF, container_serial);
+        if(_found_items.length)
+        {
+            _found_items.forEach(function(_loot_item){
+                Orion.MoveItem(_loot_item, 0, _loot_bag);
+                Orion.Wait(600);                
+            });
+        }
+    });
 }
 
 
@@ -231,4 +233,31 @@ function unload_maps()
 			Orion.Print(_map.Properties());
 		});
 	}
+}
+
+function train_bowcraft()
+{
+    while(!Player.Dead())
+    {
+        var _on_ground = Orion.FindType(0x1BDD, 0xFFFF, 'ground');
+        if(_on_ground.length)
+        {
+            Orion.MoveItem(_on_ground, 1, 'backpack');
+            Orion.Wait(200);
+        }
+        Orion.Say(".makelastitem");
+        Orion.Wait(4000);
+        var _shafts = Orion.FindType(0x1BD4);
+        Orion.Print(_shafts);
+        if(_shafts)
+        {
+        	Orion.MoveItem(_shafts, 0, 0x40038482);
+        	Orion.Wait(500);
+        }
+    }
+}
+
+function BH()
+{
+	Orion.Boxhack(0x40038482);
 }

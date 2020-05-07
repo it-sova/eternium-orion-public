@@ -29,3 +29,18 @@ function exp_counter()
 		Orion.Wait(200);
 	}
 }
+
+function train_bowcraft()
+{
+    while(!Player.Dead())
+    {
+        var _on_ground = Orion.FindType(0x1BDD, 0xFFFF, 'ground');
+        if(_on_ground.length)
+        {
+            Orion.MoveItem(_on_ground, 1, 'backpack');
+            Orion.Wait(200);
+        }
+        Orion.Say(".makelastitem");
+        Orion.Wait(4000);
+    }
+}

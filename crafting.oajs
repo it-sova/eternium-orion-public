@@ -5,17 +5,17 @@ function train_craft()
 	// Куда складываем готовое. Контейнер банка - Player.BankSerial()
 	var _unload_container = 0x40038482;
 	// Тип ресурса. 0x1BEF - слитки
-	var _resource_type = 0x1BEF;
+	var _resource_type = 0x1BDD;
 	// Тип того, что крафтим. 0x0F0E - пустые бутылки
-	var _crafting_type = 0x0F0E;
+	var _crafting_type = 0x1082;
 	///////////////// Врядли стоит трогать /////////////////
 	while(!Player.Dead())
 	{
-		if(Orion.Count(_resource_type, 0x0000, 'backpack') > 0)
+		if(Orion.Count(_resource_type, 0x0000, 'backpack') > 10)
 		{
 			Orion.Say(".makelastitem");
 			Orion.WaitJournal("Вы положили|failed", Orion.Now(), Orion.Now() + 4000);
-			if(Orion.Count(_crafting_type, 0x0000, 'backpack') > 5)
+			if(Orion.Count(_crafting_type, 0xFFFF, 'backpack') > 5)
 			{
 				var _crafted_items = Orion.FindType(_crafting_type);
 				_crafted_items.forEach(function(_item){
