@@ -1,0 +1,21 @@
+function trainStealth() {
+    x = Player.X()
+    y = Player.Y()
+
+    if (Player.WarMode()) {
+        Orion.WarMode(false);
+    }
+
+    while (!Player.Dead() && Orion.Connected()) {
+        while (!Player.Hidden()) {
+            Orion.UseSkill("Stealth");
+            Orion.WaitJournal("удалось|удачно|дождитесь|сможешь", Orion.Now(), Orion.Now() + 10000);
+        }
+
+        while (Player.Hidden()) {
+            Orion.WalkTo(x + 5, y)
+            Orion.WalkTo(x, y)
+        }
+        Orion.Wait(100)
+    }
+}
