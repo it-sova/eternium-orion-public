@@ -1,6 +1,6 @@
 //#include helpers.oajs
 // Health potion will be used at this threshold
-POTION_HEAL = 60;
+POTION_HEAL = 25;
 
 types = {
 	healingPotion: {
@@ -14,6 +14,7 @@ lootLists = [
 	"loot",
 	"gems",
 	"reagents",
+	"items",
 	"use"
 ]
 useList = "use"
@@ -145,7 +146,7 @@ function panicHeal() {
 	while (true) {
 		if (!Player.Dead()) {
 			// If we have some potions - proceed
-			potionCount = Orion.Count(types.healingPotion.type, types.healingPotion.color)
+			potionCount = Orion.Count(types["healingPotion"]["type"], types["healingPotion"]["color"])
 			if (potionCount > 0) {
 				if (Player.Hits() < (Player.MaxHits() - (Player.MaxHits() / 100 * POTION_HEAL))) {
 					// Warn if 10 or less potions were found
@@ -209,15 +210,6 @@ function AttackNextMob() {
 
 }
 
-// Summon bear + overhead timer
-function summon_bear() {
-	Orion.Say(".newbear")
-	if (!Orion.DisplayTimerExists(1)) {
-		Orion.AddDisplayTimer(1, 650 * 1000, 'custom', 'LineBar', 'Bear', 700, 350);
-		Orion.DisplayTimerSetSize(1, 200, 10);
-	}
-}
-
 function use_ability(name) {
 	colorGreen = "#4dff00ff"
 	colorRed = "#fc0320ff"
@@ -272,8 +264,11 @@ function loot_from_container(container_serial) {
 		Array.prototype.push.apply(loot, Orion.FindList(lootList, container_serial));
 	})
 
-	Orion.Print(loot)
+	lootTotal = loot.length;
+	cnt = 0;
 	loot.forEach(function (item) {
+		cnt++;
+		Orion.Print("Looting " + cnt + " of " + lootTotal + " items");
 		Orion.MoveItem(item, 0, loot_bag);
 		Orion.Wait(600);
 	});
@@ -289,7 +284,7 @@ function loot() {
 	if (_corpses.length) {
 		_corpses.forEach(function (_corpse) {
 			_counter++;
-			Orion.Print("Corpse " + _counter + "/" + _corpses.length);
+			Orion.Print("10", "Corpse " + _counter + "/" + _corpses.length);
 			loot_from_container(_corpse);
 			Orion.Wait(300);
 			_bags.forEach(function (_bag) {
@@ -313,14 +308,6 @@ function loot() {
 		}
 	}
 }
-
-function craft() {
-	while (!Player.Dead()) {
-		Orion.Say(".makelastitem");
-		Orion.Wait(4000);
-	}
-}
-
 
 function exp_counter() {
 	// Вы получили {int} единиц опыта
@@ -350,39 +337,7 @@ function exp_counter() {
 	}
 }
 
-
-
-function unload_maps() {
-	var _maps = Orion.FindType(0x14EB);
-	Orion.Print(_maps);
-	if (_maps.length) {
-		_maps.forEach(function (_item) {
-			Orion.Print(_item);
-			var _map = Orion.FindObject(_item);
-			Orion.Print(_map);
-			Orion.Print(_map.Properties());
-		});
-	}
-}
-
-function train_bowcraft() {
-	while (!Player.Dead()) {
-		var _on_ground = Orion.FindType(0x1BDD, 0xFFFF, 'ground');
-		if (_on_ground.length) {
-			Orion.MoveItem(_on_ground, 1, 'backpack');
-			Orion.Wait(200);
-		}
-		Orion.Say(".makelastitem");
-		Orion.Wait(4000);
-		var _shafts = Orion.FindType(0x1BD4);
-		Orion.Print(_shafts);
-		if (_shafts) {
-			Orion.MoveItem(_shafts, 0, 0x40038482);
-			Orion.Wait(500);
-		}
-	}
-}
-
-function BH() {
-	Orion.Boxhack(0x40038482);
+function testProps() {
+	obj = Orion.FindObject(0x40002365)
+	Orion.Print(obj.Properties())
 }

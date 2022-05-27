@@ -1,0 +1,8 @@
+function trainSpiritSpeak() {
+    while(Orion.Connected()) {
+        start = Orion.Now();
+        Orion.UseSkill("32");
+        Orion.WaitJournal("establish|You stop", start, start + 40000);
+        Orion.Wait(100);
+    }
+}
